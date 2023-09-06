@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { ListContextType, IList, IListItem } from '../@types/list';
 import { ListContext } from '../context/listContext';
-import ListItem from '../components/ListItem';
+import TextItem from '../components/ListItem/TextItem';
+import ImageItem from '../components/ListItem/ImageItem';
+
 import {
     Outlet,
     Link,
@@ -15,9 +17,15 @@ const List = () => {
         <>
             <div className="container mx-auto">
                 <h1 className="text-grey-darkest font-bold">{list.name}</h1>
-                {list.items.map((item: IListItem, idx: number) => (
-                    <ListItem key={idx} item={item} />
-                ))}
+                {list.items.map((item: IListItem, idx: number) => {
+                    if (item.item_type == "Text") {
+                        return <TextItem key={idx} item={item} />
+                    }
+                    if (item.item_type == 'Image') {
+                        return <ImageItem key={idx} item={item} />
+                    }
+                }
+                )}
             </div>
         </>
     )

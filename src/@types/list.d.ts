@@ -1,5 +1,6 @@
 export interface IListItem {
     text: string;
+    item_type: string;
 }
 
 export interface ObjectId {
