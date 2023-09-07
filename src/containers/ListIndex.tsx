@@ -11,6 +11,7 @@ import {
 const ListsIndex = () => {
     // const { lists, updateList } = React.useContext(ListContext) as ListContextType;
     const lists = useLoaderData() as IList[];
+
     return (
         <>
             <div className="container mx-auto">

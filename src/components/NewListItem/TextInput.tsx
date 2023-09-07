@@ -20,7 +20,7 @@ const TextInput: React.FC<Props> = ({ handle_input, handle_add, handle_item_type
                     onChange={handle_input}
                     ref={inputRef}
                 />
-                <DropDown options={["Text", "Image", "List"]} handle_click={handle_item_type} selected={itemType}></DropDown>
+                <DropDown options={[{ label: "Text", value: null }, { label: "Image", value: null }, { label: "List", value: null }]} handle_click={handle_item_type} selected={itemType}></DropDown>
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-20"
                     onClick={(_) => handle_add()}

@@ -3,6 +3,7 @@ import { ListContextType, IList, IListItem } from '../@types/list';
 import { ListContext } from '../context/listContext';
 import TextItem from '../components/ListItem/TextItem';
 import ImageItem from '../components/ListItem/ImageItem';
+import ListItem from '../components/ListItem/ListItem';
 
 import {
     Outlet,
@@ -23,6 +24,9 @@ const List = () => {
                     }
                     if (item.item_type == 'Image') {
                         return <ImageItem key={idx} item={item} />
+                    }
+                    if (item.item_type == 'List') {
+                        return <ListItem key={idx} item={item} />
                     }
                 }
                 )}

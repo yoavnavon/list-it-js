@@ -3,14 +3,15 @@ import * as React from 'react';
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { IOption } from '../@types/option';
 
 type Props = {
     // handle_input: (event: React.ChangeEvent<HTMLInputElement>) => void
     // handle_add: () => void
     // textRef: React.MutableRefObject<HTMLInputElement | null>
-    options: Array<string>
-    selected: string
-    handle_click: (event: any) => void
+    options: Array<IOption>
+    selected: string | undefined
+    handle_click: (value: any) => void
 };
 
 
@@ -49,7 +50,7 @@ const DropDown: React.FC<Props> = ({ options, handle_click, selected }) => {
             >
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                        {options.map((name, idx) => (<Menu.Item key={idx}>
+                        {options.map((option, idx) => (<Menu.Item key={idx}>
                             {({ active }) => (
                                 <a
 
@@ -57,9 +58,9 @@ const DropDown: React.FC<Props> = ({ options, handle_click, selected }) => {
                                     className={
                                         `block px-4 py-2 text-sm ${active ? 'bg-gray-100 text-gray-900 ' : 'text-gray-700 block px-4 py-2 text-sm'}`
                                     }
-                                    onClick={(_) => handle_click(name)}
+                                    onClick={(_) => handle_click(option.value != null ? option.value : option.label)}
                                 >
-                                    {name}
+                                    {option.label}
                                 </a>
                             )}
                         </Menu.Item>))}

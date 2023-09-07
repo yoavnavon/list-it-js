@@ -4,8 +4,10 @@ import { ListContextType, IList, IListItem } from '../@types/list';
 import { ListContext } from '../context/listContext';
 import TextItem from '../components/ListItem/TextItem';
 import ImageItem from '../components/ListItem/ImageItem';
+import ListItem from '../components/ListItem/ListItem';
 import TextInput from '../components/NewListItem/TextInput';
 import ImageInput from '../components/NewListItem/ImageInput';
+import ListInput from '../components/NewListItem/ListInput';
 import SubmitButton from '../components/SubmitButton';
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +22,7 @@ const List = () => {
     const navigate = useNavigate();
 
     const [image, setImage] = useState<File | string>("");
+    const [list, setList] = useState<IList | null>(null);
 
     const uploadImage = () => {
         const data = new FormData()
@@ -27,14 +30,12 @@ const List = () => {
             data.append("file", image)
             data.append("upload_preset", "list-it-item")
             data.append("cloud_name", "dyezktdnh")
-            console.log("uploading...")
             fetch("https://api.cloudinary.com/v1_1/dyezktdnh/image/upload", {
                 method: "post",
                 body: data
             })
                 .then(resp => resp.json())
                 .then(data => {
-                    console.log('done')
                     const new_item: IListItem = { text: data.url, item_type: itemType }
                     setItems([...items, new_item])
                     setImage("")
@@ -71,6 +72,13 @@ const List = () => {
             inputRef.current.value = ""
         }
 
+    }
+
+    const handle_add_list = () => {
+        if (list != null) {
+            const new_item: IListItem = { text: list.name, item_type: itemType }
+            setItems([...items, new_item])
+        }
     }
 
     // useEffect(() => {
@@ -120,6 +128,9 @@ const List = () => {
         else if (itemType == "Image") {
             return <ImageInput setImage={setImage} uploadImage={uploadImage} handle_item_type={handle_item_type} itemType={itemType} inputRef={inputRef}></ImageInput>
         }
+        else if (itemType == "List") {
+            return <ListInput handle_item_type={handle_item_type} itemType={itemType} setList={setList} handle_add={handle_add_list} list={list}></ListInput>
+        }
         return <TextInput handle_input={handle_input} handle_add={handle_add} inputRef={inputRef} handle_item_type={handle_item_type} itemType={itemType}></TextInput>
     })()
 
@@ -140,6 +151,9 @@ const List = () => {
                     }
                     if (item.item_type == 'Image') {
                         return <ImageItem key={idx} item={item} />
+                    }
+                    if (item.item_type == 'List') {
+                        return <ListItem key={idx} item={item} />
                     }
                 })
                 }
