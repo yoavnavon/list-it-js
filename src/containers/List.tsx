@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { ListContextType, IList, IListItem } from '../@types/list';
+import { IList, IListItem, Content } from '../@types/list';
+import { isTextType, isImageType, isListType } from '../@types/guards';
 import { ListContext } from '../context/listContext';
 import TextItem from '../components/ListItem/TextItem';
 import ImageItem from '../components/ListItem/ImageItem';
@@ -11,21 +12,23 @@ import {
     useLoaderData,
 } from "react-router-dom";
 
+
+
 const List = () => {
-    // const { lists, updateList } = React.useContext(ListContext) as ListContextType;
+    // const {lists, updateList} = React.useContext(ListContext) as ListContextType;
     const list = useLoaderData() as IList;
     return (
         <>
             <div className="container mx-auto">
                 <h1 className="text-grey-darkest font-bold">{list.name}</h1>
-                {list.items.map((item: IListItem, idx: number) => {
-                    if (item.item_type == "Text") {
+                {list.items.map((item: IListItem<Content>, idx: number) => {
+                    if (isTextType(item)) {
                         return <TextItem key={idx} item={item} />
                     }
-                    if (item.item_type == 'Image') {
+                    if (isImageType(item)) {
                         return <ImageItem key={idx} item={item} />
                     }
-                    if (item.item_type == 'List') {
+                    if (isListType(item)) {
                         return <ListItem key={idx} item={item} />
                     }
                 }

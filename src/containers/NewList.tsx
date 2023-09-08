@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { ListContextType, IList, IListItem } from '../@types/list';
+import { ListContextType, IList, IListItem, Content, IImageContent, ITextContent, IListContent } from '../@types/list';
+import { isTextType, isImageType, isListType } from '../@types/guards';
 import { ListContext } from '../context/listContext';
 import TextItem from '../components/ListItem/TextItem';
 import ImageItem from '../components/ListItem/ImageItem';
@@ -17,7 +18,7 @@ const List = () => {
     const [text, setText] = useState("");
     const [name, setName] = useState("New List");
     const inputRef = useRef<HTMLInputElement | null>(null)
-    const [items, setItems] = useState<IListItem[]>([]);
+    const [items, setItems] = useState<IListItem<Content>[]>([]);
     const [itemType, setItemType] = useState("Text");
     const navigate = useNavigate();
 
@@ -36,7 +37,7 @@ const List = () => {
             })
                 .then(resp => resp.json())
                 .then(data => {
-                    const new_item: IListItem = { text: data.url, item_type: itemType }
+                    const new_item: IListItem<IImageContent> = { content: { url: data.url, item_type: "image" } }
                     setItems([...items, new_item])
                     setImage("")
                     if (inputRef.current != null) {
@@ -65,7 +66,7 @@ const List = () => {
 
 
     const handle_add = () => {
-        const new_item: IListItem = { text, item_type: itemType }
+        const new_item: IListItem<ITextContent> = { content: { text, item_type: "text" } }
         setItems([...items, new_item])
         setText("")
         if (inputRef.current != null) {
@@ -76,7 +77,7 @@ const List = () => {
 
     const handle_add_list = () => {
         if (list != null) {
-            const new_item: IListItem = { text: list.name, item_type: itemType }
+            const new_item: IListItem<IListContent> = { content: { list, item_type: "list" } }
             setItems([...items, new_item])
         }
     }
@@ -122,17 +123,29 @@ const List = () => {
     }
 
     const input = (() => {
-        if (itemType == 'Text') {
+        if (itemType == 'text') {
             return <TextInput handle_input={handle_input} handle_add={handle_add} inputRef={inputRef} handle_item_type={handle_item_type} itemType={itemType}></TextInput>
         }
-        else if (itemType == "Image") {
+        if (itemType == "image") {
             return <ImageInput setImage={setImage} uploadImage={uploadImage} handle_item_type={handle_item_type} itemType={itemType} inputRef={inputRef}></ImageInput>
         }
-        else if (itemType == "List") {
+        if (itemType == "list") {
             return <ListInput handle_item_type={handle_item_type} itemType={itemType} setList={setList} handle_add={handle_add_list} list={list}></ListInput>
         }
         return <TextInput handle_input={handle_input} handle_add={handle_add} inputRef={inputRef} handle_item_type={handle_item_type} itemType={itemType}></TextInput>
     })()
+
+    const typeToItem = (item: IListItem<Content>, idx: number) => {
+        if (isTextType(item)) {
+            return <TextItem key={idx} item={item} />
+        }
+        if (isImageType(item)) {
+            return <ImageItem key={idx} item={item} />
+        }
+        if (isListType(item)) {
+            return <ListItem key={idx} item={item} />
+        }
+    }
 
 
     return (
@@ -145,18 +158,7 @@ const List = () => {
                     onChange={handle_name}
                     value={name}
                 />
-                {items.map((item: IListItem, idx: number) => {
-                    if (item.item_type == "Text") {
-                        return <TextItem key={idx} item={item} />
-                    }
-                    if (item.item_type == 'Image') {
-                        return <ImageItem key={idx} item={item} />
-                    }
-                    if (item.item_type == 'List') {
-                        return <ListItem key={idx} item={item} />
-                    }
-                })
-                }
+                {items.map(typeToItem)}
                 {input}
                 <SubmitButton handle_submit={handle_submit}></SubmitButton>
             </div>

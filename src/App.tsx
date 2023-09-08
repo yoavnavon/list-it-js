@@ -33,12 +33,12 @@ const router = createBrowserRouter([
     loader: listLoader,
   },
   {
-    path: "list/:id",
+    path: "/list/:id",
     element: <List />,
     loader: singleListLoader
   },
   {
-    path: "list/new",
+    path: "/list/new",
     element: <NewList />,
   },
 ]);
